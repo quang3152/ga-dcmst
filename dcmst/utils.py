@@ -27,7 +27,7 @@ def get_distance_table(file_path):
     # In ra từ điển khoảng cách
     return distances_table
 
-print(get_distance_table("data/7_wi29.csv"))
+print(get_distance_table("data/5_wi29.csv"))
 
 def get_distance(edge, distances_table):
     if edge in distances_table:
@@ -85,4 +85,4 @@ def gen_bit(n):
     return bit
 
 
-print(compute_n(45))
+# print(compute_n(45))
