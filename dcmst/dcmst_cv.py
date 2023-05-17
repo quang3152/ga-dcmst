@@ -249,9 +249,6 @@ def run_ga(n, degree_constrained, distances_table, population_size=50, crossover
     return population
 
 
-import csv
-
-
 def write_result(results, filename):
     path_result = "result"
     with open(filename, 'w', newline='') as file:
@@ -264,18 +261,20 @@ def write_result(results, filename):
 
 
 degree_constrained = 3
-n = 60
-path = "data/90_nodes"
+n = 8
+path = "data/8_nodes"
 # list_file = os.listdir(path)
 list_file = [file_name for file_name in os.listdir(path) if file_name.endswith(".csv")]
-
+folder = path.replace("data", "result/result_cv")
+if not os.path.exists(folder):
+    os.mkdir(folder)
 print(list_file)
 for file in list_file:
     print(file)
     results = []
     path_to_data = os.path.join(path, file)
     dis_tab = get_distance_table(path_to_data)
-    path_to_result = path_to_data.replace("data", "result_cv")
+    path_to_result = path_to_data.replace("data", "result/result_cv")
     path_to_result = path_to_result.replace("\\", "/")
     # print(path_to_result)
     for i in range(10):

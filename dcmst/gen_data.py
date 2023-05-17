@@ -13,7 +13,8 @@ def gen_data(path, number_of_line, loop):
         sample_df = sample_df.reset_index(drop=True)
         sample_df['city'] = sample_df.index
         file_name = path.split("/")[-1]
-        file_name = str(i+1) + "_" + str(number_of_line) + "_" + file_name
+        # file_name = str(i+1) + "_" + str(number_of_line) + "_" + file_name
+        file_name = "d" + str(number_of_line) + "_" + str(i+1) + ".csv"
         sample_df = sample_df.drop_duplicates()
 
         folder_name = str(number_of_line) + "_nodes"
@@ -24,8 +25,9 @@ def gen_data(path, number_of_line, loop):
         sample_df.to_csv(new_path, index=False)
 
 
-gen_data("data/fi10k.csv", 15, 30)
-gen_data("data/fi10k.csv", 30, 30)
-gen_data("data/fi10k.csv", 60, 30)
-gen_data("data/fi10k.csv", 90, 30)
+# gen_data("data/fi10k.csv", 15, 30)
+# gen_data("data/fi10k.csv", 30, 30)
+# gen_data("data/fi10k.csv", 60, 30)
+# gen_data("data/fi10k.csv", 90, 30)
+gen_data("data/fi10639.csv", 8, 30)
 
