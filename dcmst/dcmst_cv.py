@@ -1,12 +1,13 @@
+import csv
 import random
-
 import networkx as nx
 import numpy as np
 import os
 import time
 # from utils_cv import *
 # from utils import compute_degree
-from util import *
+from utils import encode_to_cv, decode_to_graph, make_graph_connected, fix_cycle, is_cycle, compute_n, compute_degree, \
+    get_distance_table, gen_bit, get_distance, convert_lset_to_llist, sort_sublists
 import sys
 
 
@@ -87,7 +88,7 @@ def calculate_fitness(cv_sequence, degree_constrained, distances_table):
     return cost
 
 
-def crossover(parent1, parent2, crossover_rate=1):
+def crossover(parent1, parent2, crossover_rate=0.8):
     offspring1 = parent1[:]
     offspring2 = parent2[:]
     if random.random() < crossover_rate:
@@ -106,14 +107,14 @@ def mutate(individual, mutation_rate=0.1):
     return individual
 
 
-def mutate_pop(population, mutation_rate):
-    new_pop = []
-    for individual in population:
-        if random.random() < mutation_rate:
-            idx1, idx2 = random.sample(range(len(individual)), 2)
-            individual[idx1], individual[idx2] = individual[idx2], individual[idx1]
-            new_pop.append(individual)
-    return new_pop
+# def mutate_pop(population, mutation_rate):
+#     new_pop = []
+#     for individual in population:
+#         if random.random() < mutation_rate:
+#             idx1, idx2 = random.sample(range(len(individual)), 2)
+#             individual[idx1], individual[idx2] = individual[idx2], individual[idx1]
+#             new_pop.append(individual)
+#     return new_pop
 
 
 import heapq
@@ -215,7 +216,7 @@ def repair_pop(pop, degree_constrained):
     return pop
 
 
-def run_ga(n, degree_constrained, distances_table, population_size=50, crossover_rate=0.8, mutation_rate=0.1,
+def run_ga(n, degree_constrained, distances_table, population_size=80, crossover_rate=0.8, mutation_rate=0.1,
            max_generations=50):
     population = [gen_bit(n) for _ in range(population_size)]
     repair_pop(population, degree_constrained)
@@ -233,11 +234,11 @@ def run_ga(n, degree_constrained, distances_table, population_size=50, crossover
                                     p=p / np.sum(p))
             parent1 = population[i]
             parent2 = population[j]
-            offspring1, offspring2 = crossover(parent1, parent2)
+            offspring1, offspring2 = crossover(parent1, parent2, crossover_rate)
             new_population.append(offspring1)
             new_population.append(offspring2)
         for i in range(len(new_population)):
-            mutate(new_population[i])
+            mutate(new_population[i], mutation_rate)
         repair_pop(new_population, degree_constrained)
         new_fitness = [calculate_fitness(prufer_sequence, degree_constrained, distances_table) for
                        prufer_sequence in new_population]
@@ -250,7 +251,7 @@ def run_ga(n, degree_constrained, distances_table, population_size=50, crossover
 
 
 def write_result(results, filename):
-    path_result = "result"
+    # path_result = "result"
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['STT', 'Best Cost', 'Best Solution', 'Best Tree', 'Time', 'Is Tree?'])
@@ -267,7 +268,7 @@ path = "data/8_nodes"
 list_file = [file_name for file_name in os.listdir(path) if file_name.endswith(".csv")]
 folder = path.replace("data", "result/result_cv")
 if not os.path.exists(folder):
-    os.mkdir(folder)
+    os.makedirs(folder)
 print(list_file)
 for file in list_file:
     print(file)

@@ -88,7 +88,7 @@ def calculate_fitness(prufer_sequence, degree_constrained, distances_table):
     return cost
 
 
-def crossover(parent1, parent2, crossover_rate=1):
+def crossover(parent1, parent2, crossover_rate=0.8):
     offspring1 = parent1[:]
     offspring2 = parent2[:]
     # print(parent1, parent2)
@@ -179,7 +179,7 @@ def create_new_population(population, fitness, pop_size):
     return new_pop
 
 
-def run_ga(n, degree_constrained, distances_table, population_size=50, crossover_rate=0.8, mutation_rate=0.1,
+def run_ga(n, degree_constrained, distances_table, population_size=80, crossover_rate=0.8, mutation_rate=0.1,
            max_generations=50):
     population = [gen_prufer(degree_constrained, n) for _ in range(population_size)]
 
@@ -195,11 +195,11 @@ def run_ga(n, degree_constrained, distances_table, population_size=50, crossover
                                     p=np.array(fitness_values) / sum(fitness_values))
             parent1 = population[i]
             parent2 = population[j]
-            offspring1, offspring2 = crossover(parent1, parent2)
+            offspring1, offspring2 = crossover(parent1, parent2, crossover_rate)
             new_population.append(offspring1)
             new_population.append(offspring2)
         for i in range(len(new_population)):
-            mutate(new_population[i])
+            mutate(new_population[i], mutation_rate)
             #             print(new_population[i])
             repair(new_population[i], degree_constrained)
         #             print(new_population[i])
@@ -234,7 +234,7 @@ def main(path, degree_constrained, n):
     list_file = os.listdir(path)
     folder = path.replace("data", "result/result_pr")
     if not os.path.exists(folder):
-        os.mkdir(folder)
+        os.makedirs(folder)
     print(list_file)
     for file in list_file:
         print(file)
@@ -247,7 +247,9 @@ def main(path, degree_constrained, n):
         for i in range(10):
             print("Loop: ", i + 1, "...")
             start_time = time.time()
+
             population = run_ga(n, degree_constrained, dis_tab)
+
             best_solution = population[0]
             best_cost = calculate_fitness(best_solution, n, dis_tab)
             best_tree = nx.from_prufer_sequence(population[0]).edges()

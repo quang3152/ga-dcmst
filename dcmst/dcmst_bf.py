@@ -6,7 +6,7 @@ import time
 
 import networkx as nx
 
-from util import get_distance, get_distance_table, write_result
+from utils import get_distance, get_distance_table
 
 
 def read_txt_file(file_path):
@@ -83,6 +83,8 @@ if __name__ == "__main__":
     degree_constrained = 3
     list_file = os.listdir(path)
     print(list_file)
+    if not os.path.exists("result/result_bf"):
+        os.makedirs("result/result_bf")
     file = open("result/result_bf/bf.csv", 'w', newline='')
     writer = csv.writer(file)
     writer.writerow(['Instance', 'Best Tree', 'Best Cost'])
@@ -96,7 +98,7 @@ if __name__ == "__main__":
         # print(path_to_result.split("/"))
         folder = path_to_result.split("/")[0] + "/" + path_to_result.split("/")[1]
         if not os.path.exists(folder):
-            os.mkdir(folder)
+            os.makedirs(folder)
         # print(path_to_result)
         best_tree, min_cost = run_bf(path_to_data, tree_path, degree_constrained)
         row = (path_to_result.split("/")[-1], best_tree, min_cost)
